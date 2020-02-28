@@ -17,8 +17,9 @@ const emptyGeojson = {
 
 const onEachFeature = (feat, layer) => {
   const props = feat.properties;
-  layer.bindPopup(`<p><strong><a href="${props.URL}">${props.OrgName}</a></strong></p>`);
+  layer.bindPopup(`<h3>${props.OrgName}</h3>`);
   layer.on('mouseover', () => layer.openPopup());
+  layer.on('mouseout', () => layer.closePopup());
 };
 
 const Map = function (opts) {
