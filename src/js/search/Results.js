@@ -4,6 +4,7 @@ const closest = require('closest');
 
 const emitter = require('../emitter');
 const helpers = require('../helpers');
+const { getZipCode } = require('../ZipcodeService');
 
 const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
@@ -116,44 +117,31 @@ Results.prototype.nearest = function (zipcode) {
   }
   this.message.innerHTML = '';
 
-  const findNearest = () => {
-    const userZipcode = this.zipcodes.features
-      .filter((zip) => zip.properties.GEOID10 === zipcode);
-
-    if (!userZipcode.length) {
-      this.message.innerHTML = 'The number you entered did not match an existing zipcode.';
-      return false;
-    }
-    return this.index.nearest(userZipcode[0].geometry.coordinates, 10);
+  const findNearest = (geometry) => {
+    if (!geometry) return false;
+    return this.index.nearest(geometry, 10);
   };
-
-  const mapOfficesToFeatures = (nearestOffices) => nearestOffices.map((o) => o.layer.feature);
 
   const findAndDisplayNearestOffices = (zip) => {
     const nearestOffices = findNearest(zip);
     if (nearestOffices) {
-      const features = mapOfficesToFeatures(nearestOffices);
+      const features = nearestOffices.map((o) => o.layer.feature);
       this.render(features, templates.officeList);
     }
   };
 
-  if (!this.zipcodes) {
-    const indexData = L.geoJSON(this.data);
-    console.log(indexData instanceof L.GeoJSON);
-    this.index = leafletKnn(indexData);
-    this.message.innerHTML = 'Loading zipcode data...';
-    this.loading.setAttribute('aria-hidden', 'false');
-    fetch('./data/zip-centroids.js')
-      .then((res) => res.json())
-      .then((zipcodes) => {
-        this.message.innerHTML = '';
-        this.loading.setAttribute('aria-hidden', 'true');
-        this.zipcodes = zipcodes;
-        findAndDisplayNearestOffices(zipcode);
-      });
-  } else {
-    findAndDisplayNearestOffices(zipcode);
-  }
+  this.index = leafletKnn(L.geoJSON(this.data));
+  this.message.innerHTML = 'Loading zipcode data...';
+  this.loading.setAttribute('aria-hidden', 'false');
+  getZipCode(zipcode)
+    .then((geojson) => {
+      const { coordinates } = geojson.features[0].geometry;
+      this.message.innerHTML = '';
+      this.loading.setAttribute('aria-hidden', 'true');
+      findAndDisplayNearestOffices([...coordinates]);
+      emitter.emit('found:zipcode', geojson);
+    })
+    .catch(() => { this.message.innerHTML = 'The number you entered did not match an existing zipcode.'; });
 };
 
 module.exports = Results;
