@@ -5,7 +5,7 @@ const Search = function (opts) {
   this.input = opts.input;
   this.select = opts.select;
   this.radios = opts.radios;
-  this.state = 'alphabetical';
+  this.state = 'refuge';
 
   emitter.on('query', (query) => { this.input.value = query; });
   emitter.on('method', (method) => {
@@ -19,10 +19,10 @@ const Search = function (opts) {
 
 Search.prototype.emitQuery = function (e) {
   const query = e.target.value;
-  const isAlphabetical = this.state === 'alphabetical';
+  const isRefuge = this.state === 'refuge';
   const isZip = this.state === 'zipcode';
   const isState = this.state === 'state';
-  if (isAlphabetical || isState && query.length) emitter.emit(`search:${this.state}`, query);
+  if (isRefuge || isState && query.length) emitter.emit(`search:${this.state}`, query);
   else if (isZip && query.length) emitter.emit('search:zipcode', query);
 };
 

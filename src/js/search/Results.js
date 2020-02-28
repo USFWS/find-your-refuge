@@ -23,9 +23,10 @@ const Results = function (opts) {
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
 
-  emitter.on('search:alphabetical', (query) => {
+  emitter.on('search:refuge', (query) => {
     const results = this.find(query);
     this.empty();
+    this.message.innerHTML = 'Enter a refuge name or state.';
     this.select.parentNode.setAttribute('aria-hidden', 'true');
     this.textInput.parentNode.setAttribute('aria-hidden', 'false');
     this.render(results, templates.officeList);
@@ -33,6 +34,7 @@ const Results = function (opts) {
 
   emitter.on('search:zipcode', (zipcode) => {
     this.empty();
+    this.message.innerHTML = 'Please enter a five-digit zip code.';
     this.select.parentNode.setAttribute('aria-hidden', 'true');
     this.textInput.parentNode.setAttribute('aria-hidden', 'false');
     this.nearest(zipcode);
