@@ -13,6 +13,11 @@ const emptyGeojson = {
   features: [],
 };
 
+const zoomOptions = {
+  paddingTopLeft: [375, 50],
+  paddingBottomRight: [50, 50]
+};
+
 const onEachFeature = (feat, layer) => {
   layer.bindPopup(`<h3>${feat.properties.OrgName}</h3>`);
   layer.on('mouseover', () => layer.openPopup());
@@ -41,25 +46,22 @@ const Map = function (opts) {
   L.control.layers(layers.basemaps, { 'Refuge boundaries': layers.refuges }).addTo(this.map);
   L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-  
-
   // Event listeners
-  //  - Change basemap
   emitter.on('set:bounds', (bounds) => this.map.fitBounds(bounds));
+
+  emitter.on('zoom:amenity', (coords) => this.map.flyTo(coords, 16, zoomOptions));
+
   emitter.on('zoom:refuge', (refuge) => {
     const coordinates = [...refuge.geometry.coordinates].reverse();
-    this.map.flyTo(coordinates, 12, {
-      paddingTopLeft: [375, 50],
-      paddingBottomRight: [50, 50],
-    });
+    this.map.flyTo(coordinates, 12, zoomOptions);
   });
+
   emitter.on('render:results', (features) => {
     const bounds = helpers.featuresToBounds(features);
     this.filtered.clearLayers();
     this.filtered.addData({ ...emptyGeojson, features });
     this.map.fitBounds(bounds, {
-      paddingTopLeft: [375, 50],
-      paddingBottomRight: [50, 50],
+      ...zoomOptions,
       maxZoom: 12,
     });
   });
