@@ -120,10 +120,6 @@
     margin-right: 1rem;
     width: 35px;
   }
-
-  &:hover {
-    background: #eee;
-  }
 }
 
 .zoom-to-amenity,
@@ -131,6 +127,11 @@
   background: transparent;
   border: none;
   width: 100%;
+
+  &:hover,
+  &:focus {
+    background: #eee;
+  }
 }
 
 .amenities-list {
