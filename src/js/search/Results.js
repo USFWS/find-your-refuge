@@ -24,6 +24,9 @@ const Results = function (opts) {
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
 
+  // Analytics events
+  this.select.addEventListener('change', (e) => emitter.emit('select:state', e.target.value));
+
   const getAndRenderAmenities = (refuge) => {
     const props = refuge.properties;
     getAmenitiesByOrgName(props.OrgName)
