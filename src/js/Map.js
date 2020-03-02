@@ -16,10 +16,10 @@ const emptyGeojson = {
 };
 
 const onEachFeature = (feat, layer) => {
-  const props = feat.properties;
-  layer.bindPopup(`<h3>${props.OrgName}</h3>`);
+  layer.bindPopup(`<h3>${feat.properties.OrgName}</h3>`);
   layer.on('mouseover', () => layer.openPopup());
   layer.on('mouseout', () => layer.closePopup());
+  layer.on('click', () => emitter.emit('click:refuge', [feat]));
 };
 
 const Map = function (opts) {
