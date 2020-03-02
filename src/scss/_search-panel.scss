@@ -52,6 +52,10 @@
     fill: $gray;
   }
 
+  .facility-info {
+    pointer-events: none;
+  }
+
   .facility-name {
     color: $blue !important;
     font-weight: bold;
