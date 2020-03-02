@@ -93,8 +93,8 @@ Results.prototype.empty = function () {
 };
 
 Results.prototype.handleResultClick = function (e) {
-  if (e.target.className === 'facility-icon') {
-    const facilityName = closest(e.target, '.facility-info').querySelector('.facility-name').textContent;
+  if (e.target.className === 'zoom-to-refuge') {
+    const facilityName = e.target.getAttribute('data-orgname');
     const refuge = helpers.findRefugeByName(facilityName, this.data);
     emitter.emit('zoom:refuge', refuge);
   }
