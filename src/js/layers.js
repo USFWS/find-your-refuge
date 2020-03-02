@@ -2,6 +2,8 @@ const L = require('leaflet');
 const esri = require('esri-leaflet');
 require('esri-leaflet-renderers');
 
+const emitter = require('./emitter');
+
 let amenityIcons = [];
 
 const natGeo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -14,17 +16,16 @@ const grayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/serv
   maxZoom: 16,
 });
 
-const refuges = L.tileLayer.wms('https://gis.fws.gov/arcgis/services/FWS_Refuge_Boundaries/MapServer/WMSServer?', {
-  layers: '0',
-  opacity: 0.5,
-  transparent: true,
-  format: 'image/png',
+const refuges = esri.featureLayer({
+  url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWSInterest_Simplified_Authoritative/FeatureServer/1',
+  minZoom: 11,
   attribution: 'U.S. Fish and Wildlife Service',
+  onEachFeature: (feature, layer) => layer.on('click', () => emitter.emit('zoom:refugefeature', feature))
 });
 
 const amenities = esri.featureLayer({
   url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
-  minZoom: 12,
+  minZoom: 11,
   onEachFeature: (feature, layer) => layer.bindPopup(`<p>${feature.properties.Name}</p>`),
 });
 
