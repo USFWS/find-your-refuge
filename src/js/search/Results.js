@@ -44,6 +44,25 @@ const Results = function (opts) {
       });
   });
 
+  emitter.on('zoom:refuge', (refuge) => {
+    const props = refuge.properties;
+    getAmenitiesByOrgName(props.OrgName)
+      .then((amenities) => {
+        // Add ameninty data to refuge geojson
+        const data = {
+          ...refuge,
+          properties: {
+            ...props,
+            amenities: [
+              ...amenities.features
+            ]
+          }
+        };
+        this.empty();
+        this.render([data], templates.refuge);
+      });
+  });
+
   emitter.on('search:refuge', (query) => {
     const results = this.find(query);
     this.empty();
@@ -100,9 +119,7 @@ Results.prototype.handleResultClick = function (e) {
   }
 
   if (e.target.className === 'zoom-to-amenity') {
-    console.log(e.target);
     const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
-    console.log(coordinates);
     emitter.emit('zoom:amenity', coordinates);
   }
 };
