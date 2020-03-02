@@ -22,6 +22,14 @@ emitter.on('search:term', ({ query, type }) => {
   }
 });
 
+// Selected an amenity in search results
+emitter.on('select:amenity', ({ OrgName: refuge, Name: amenity}) => {
+  analytics('event', 'select:amenity', {
+    event_label: `${refuge}: ${amenity}`,
+    event_category: app
+  });
+});
+
 // Selected state from dropdown
 emitter.on('select:state', (state) => {
   analytics('event', 'search:state', {
