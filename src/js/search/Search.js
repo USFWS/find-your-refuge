@@ -15,6 +15,14 @@ const Search = function (opts) {
   this.input.addEventListener('input', debounce(this.emitQuery.bind(this), 400));
   this.select.addEventListener('input', this.emitQuery.bind(this));
   this.radios.forEach((r) => r.addEventListener('click', this.toggleSearchInterface.bind(this)));
+
+  // Analytics events
+  this.input.addEventListener('input', debounce((e) => {
+    emitter.emit('search:term', {
+      query: e.target.value,
+      type: this.state
+    });
+  }, 2500));
 };
 
 Search.prototype.emitQuery = function (e) {

@@ -4,7 +4,7 @@ const leafletKnn = require('leaflet-knn');
 const emitter = require('../emitter');
 const { findRefugeByName } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
-const { getAmenitiesByOrgName } = require('../AmenitiesService');
+const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
 
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
@@ -23,6 +23,9 @@ const Results = function (opts) {
   this.length = opts.length;
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
+
+  // Analytics events
+  this.select.addEventListener('change', (e) => emitter.emit('select:state', e.target.value));
 
   const getAndRenderAmenities = (refuge) => {
     const props = refuge.properties;
@@ -83,7 +86,6 @@ const Results = function (opts) {
 
   this.list.addEventListener('click', this.handleResultClick.bind(this));
   this.toggle.addEventListener('click', this.toggleResults.bind(this));
-
 };
 
 Results.prototype.open = function () {
@@ -114,6 +116,9 @@ Results.prototype.handleResultClick = function (e) {
   if (e.target.className === 'zoom-to-amenity') {
     const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
     emitter.emit('zoom:amenity', coordinates);
+    //Analytics event
+    getAmenityById(e.target.getAttribute('data-id'))
+      .then((amenity) => emitter.emit('select:amenity', amenity));
   }
 };
 

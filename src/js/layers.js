@@ -26,7 +26,17 @@ const refuges = esri.featureLayer({
 const amenities = esri.featureLayer({
   url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
   minZoom: 11,
-  onEachFeature: (feature, layer) => layer.bindPopup(`<p>${feature.properties.Name}</p>`),
+  onEachFeature: (feature, layer) => {
+    layer.bindPopup(`<p>${feature.properties.Name}</p>`)
+    layer.on('click', (e) => {
+      // Analytics event
+      emitter.emit('select:amenity', {
+        OrgName: e.target.feature.properties.OrgName,
+        Name: e.target.feature.properties.Name
+      });
+      emitter.emit('zoom:amenity', [...e.target.feature.geometry.coordinates].reverse());
+    })
+  },
 });
 
 const getAmenityIcons = () => amenityIcons;

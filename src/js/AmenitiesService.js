@@ -7,6 +7,15 @@ const getAmenitiesByOrgName = (orgName) => {
     .catch(console.log);
 };
 
+const getAmenityById = (id) => {
+  const API_URL = `${AMENITIES_URL}?outFields=OrgName,Name&f=pgeojson&objectIds=${id}`;
+  return fetch(API_URL)
+    .then((res) => res.json())
+    .then((res) => res.features[0].properties)
+    .catch(console.log);
+};
+
 module.exports = {
-  getAmenitiesByOrgName
+  getAmenitiesByOrgName,
+  getAmenityById
 }
