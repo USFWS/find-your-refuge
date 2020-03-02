@@ -69,6 +69,7 @@ const Results = function (opts) {
     this.message.innerHTML = 'Enter a refuge name or state.';
     this.select.parentNode.setAttribute('aria-hidden', 'true');
     this.textInput.parentNode.setAttribute('aria-hidden', 'false');
+    if (!results) return;
     this.render(results, templates.officeList);
   });
 
@@ -143,7 +144,7 @@ Results.prototype.find = function (query) {
 };
 
 Results.prototype.render = function (results, template) {
-  if (!results) {
+  if (!results.length) {
     this.list.innerHTML = '';
     this.toggle.setAttribute('aria-hidden', 'true');
     return false;
