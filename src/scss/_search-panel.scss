@@ -223,7 +223,9 @@ input[type="radio"]:not(:checked) ~ label {
 }
 
 .message {
+  color: $blue;
   font-style: italic;
+  margin: .5rem 0;
   text-align: center;
 
   &:empty {
