@@ -106,7 +106,24 @@
   }
 }
 
-.zoom-to-amenity {
+.zoom-to-refuge {
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+  svg {
+    height: 35px;
+    margin-right: 1rem;
+    width: 35px;
+  }
+
+  &:hover {
+    background: #eee;
+  }
+}
+
+.zoom-to-amenity,
+.zoom-to-refuge {
   background: transparent;
   border: none;
   width: 100%;
