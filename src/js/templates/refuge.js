@@ -3,7 +3,6 @@ const { getAmenityIcon } = require('../layers');
 const createAmenityItem = (amenity) => {
   const icon = getAmenityIcon(amenity.properties.Category);
   const coords = [...amenity.geometry.coordinates].reverse();
-  console.log(amenity);
   return `
     <li>
       <button class="zoom-to-amenity" data-coordinates="${JSON.stringify(coords)}">
@@ -15,7 +14,6 @@ const createAmenityItem = (amenity) => {
 
 const refugeTemplate = (refuges) => {
   const props = refuges[0].properties;
-  console.log(props);
   return `
     <li>
       <h3>${props.OrgName} in ${props.State_Name}</h3>

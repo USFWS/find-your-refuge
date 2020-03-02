@@ -7,12 +7,10 @@ const helpers = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName } = require('../AmenitiesService');
 
-const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
 
 const templates = {
-  officeListByState,
   officeList,
   refuge
 };
@@ -36,6 +34,25 @@ const Results = function (opts) {
           ...refuge[0],
           properties: {
             ...refuge[0].properties,
+            amenities: [
+              ...amenities.features
+            ]
+          }
+        };
+        this.empty();
+        this.render([data], templates.refuge);
+      });
+  });
+
+  emitter.on('zoom:refuge', (refuge) => {
+    const props = refuge.properties;
+    getAmenitiesByOrgName(props.OrgName)
+      .then((amenities) => {
+        // Add ameninty data to refuge geojson
+        const data = {
+          ...refuge,
+          properties: {
+            ...props,
             amenities: [
               ...amenities.features
             ]
@@ -95,16 +112,14 @@ Results.prototype.empty = function () {
 };
 
 Results.prototype.handleResultClick = function (e) {
-  if (e.target.className === 'facility-icon') {
-    const facilityName = closest(e.target, '.facility-info').querySelector('.facility-name').textContent;
+  if (e.target.className === 'zoom-to-refuge') {
+    const facilityName = e.target.getAttribute('data-orgname');
     const refuge = helpers.findRefugeByName(facilityName, this.data);
     emitter.emit('zoom:refuge', refuge);
   }
 
   if (e.target.className === 'zoom-to-amenity') {
-    console.log(e.target);
     const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
-    console.log(coordinates);
     emitter.emit('zoom:amenity', coordinates);
   }
 };

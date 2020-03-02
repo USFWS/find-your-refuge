@@ -52,6 +52,10 @@
     fill: $gray;
   }
 
+  .facility-info {
+    pointer-events: none;
+  }
+
   .facility-name {
     color: $blue !important;
     font-weight: bold;
@@ -106,10 +110,28 @@
   }
 }
 
-.zoom-to-amenity {
+.zoom-to-refuge {
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+  svg {
+    height: 35px;
+    margin-right: 1rem;
+    width: 35px;
+  }
+}
+
+.zoom-to-amenity,
+.zoom-to-refuge {
   background: transparent;
   border: none;
   width: 100%;
+
+  &:hover,
+  &:focus {
+    background: #eee;
+  }
 }
 
 .amenities-list {
