@@ -5,7 +5,7 @@ const createAmenityItem = (amenity) => {
   const coords = [...amenity.geometry.coordinates].reverse();
   return `
     <li>
-      <button class="zoom-to-amenity" data-coordinates="${JSON.stringify(coords)}">
+      <button class="zoom-to-amenity" data-coordinates="${JSON.stringify(coords)}" data-id="${amenity.id}">
         <img src="data:image/png;base64,${icon.symbol.imageData}" alt="${icon.label} icon" /> ${amenity.properties.Name}
       </button>
     </li>
