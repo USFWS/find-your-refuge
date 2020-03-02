@@ -3,6 +3,7 @@ const Map = require('./Map');
 const Search = require('./search/Search');
 const Results = require('./search/Results');
 const deepLink = require('./deep-link');
+require('./analytics');
 
 const searchPanel = document.querySelector('.search-panel');
 const form = searchPanel.querySelector('.search-form');
