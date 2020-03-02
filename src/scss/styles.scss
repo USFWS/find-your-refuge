@@ -2,9 +2,9 @@ $blue: #0055af;
 
 @font-face {
   font-family: "Merriweather";
-  src: url("https://www.fws.gov/refuges/fonts/merriweather-bold-webfont.woff2") format("woff2"),
-    url("https://www.fws.gov/refuges/fonts/merriweather-bold-webfont.woff") format("woff"),
-    url("https://www.fws.gov/refuges/fonts/merriweather-bold-webfont.ttf") format("truetype");
+  src: url("../fonts/merriweather-bold-webfont.woff2") format("woff2"),
+    url("../fonts/merriweather-bold-webfont.woff") format("woff"),
+    url("../fonts/merriweather-bold-webfont.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
