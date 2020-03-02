@@ -7,12 +7,10 @@ const helpers = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName } = require('../AmenitiesService');
 
-const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
 
 const templates = {
-  officeListByState,
   officeList,
   refuge
 };
