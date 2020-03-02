@@ -1,9 +1,8 @@
 const L = require('leaflet');
 const leafletKnn = require('leaflet-knn');
-const closest = require('closest');
 
 const emitter = require('../emitter');
-const helpers = require('../helpers');
+const { findRefugeByName } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName } = require('../AmenitiesService');
 
@@ -25,26 +24,7 @@ const Results = function (opts) {
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
 
-  emitter.on('click:refuge', (refuge) => {
-    const props = refuge[0].properties;
-    getAmenitiesByOrgName(props.OrgName)
-      .then((amenities) => {
-        // Add ameninty data to refuge geojson
-        const data = {
-          ...refuge[0],
-          properties: {
-            ...refuge[0].properties,
-            amenities: [
-              ...amenities.features
-            ]
-          }
-        };
-        this.empty();
-        this.render([data], templates.refuge);
-      });
-  });
-
-  emitter.on('zoom:refuge', (refuge) => {
+  const getAndRenderAmenities = (refuge) => {
     const props = refuge.properties;
     getAmenitiesByOrgName(props.OrgName)
       .then((amenities) => {
@@ -61,6 +41,18 @@ const Results = function (opts) {
         this.empty();
         this.render([data], templates.refuge);
       });
+  }
+
+  // Clicked on refuge on the map
+  emitter.on('click:refuge', (refuges) => getAndRenderAmenities(refuges[0]));
+
+  // Clicked on refuge in search results
+  emitter.on('zoom:refuge', (refuge) => getAndRenderAmenities(refuge));
+
+  // Clicked on simplified refuge boundary feature layer
+  emitter.on('zoom:refugefeature', (feature) => {
+    const refuge = findRefugeByName(feature.properties.ORGNAME, this.data);
+    getAndRenderAmenities(refuge);
   });
 
   emitter.on('search:refuge', (query) => {
@@ -115,7 +107,7 @@ Results.prototype.empty = function () {
 Results.prototype.handleResultClick = function (e) {
   if (e.target.className === 'zoom-to-refuge') {
     const facilityName = e.target.getAttribute('data-orgname');
-    const refuge = helpers.findRefugeByName(facilityName, this.data);
+    const refuge = findRefugeByName(facilityName, this.data);
     emitter.emit('zoom:refuge', refuge);
   }
 
