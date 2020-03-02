@@ -38,7 +38,7 @@ const getIconPath = (type) => {
   }
 };
 
-const findRefugeByName = (name, data) => data.find((r) => r.properties.OrgName === name);
+const findRefugeByName = (name, data) => data.find((r) => r.properties.OrgName.toLowerCase() === name.toLowerCase());
 
 const featuresToBounds = (features) => features.reduce(
   (bounds, feature) => {
