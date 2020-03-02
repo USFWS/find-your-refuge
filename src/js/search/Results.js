@@ -8,10 +8,12 @@ const { getZipCode } = require('../ZipcodeService');
 
 const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
+const refuge = require('../templates/refuge');
 
 const templates = {
   officeListByState,
   officeList,
+  refuge
 };
 
 const Results = function (opts) {
@@ -23,6 +25,11 @@ const Results = function (opts) {
   this.length = opts.length;
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
+
+  emitter.on('click:refuge', (refuge) => {
+    this.empty();
+    this.render(refuge, templates.refuge);
+  });
 
   emitter.on('search:refuge', (query) => {
     const results = this.find(query);
@@ -98,7 +105,7 @@ Results.prototype.find = function (query) {
 };
 
 Results.prototype.render = function (results, template) {
-  if (!results || !results.length) {
+  if (!results) {
     this.list.innerHTML = '';
     this.toggle.setAttribute('aria-hidden', 'true');
     return false;
