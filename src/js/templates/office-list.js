@@ -1,6 +1,6 @@
 const createListItem = ({ properties: props }) => `
   <li>
-    <button class="zoom-to-refuge" value="${props.OrgName}">
+    <button class="zoom-to-refuge" data-orgname="${props.OrgName}">
       <svg class="orange-marker">
         <use xlink:href="#orange"></use>
       </svg>
