@@ -1,6 +1,4 @@
 const L = require('leaflet');
-const esri = require('esri-leaflet');
-require('esri-leaflet-renderers');
 
 const helpers = require('./helpers');
 const emitter = require('./emitter');
@@ -38,16 +36,12 @@ const Map = function (opts) {
 
   layers.natGeo.addTo(this.map);
   layers.refuges.addTo(this.map);
+  layers.amenities.addTo(this.map);
 
   L.control.layers(layers.basemaps, { 'Refuge boundaries': layers.refuges }).addTo(this.map);
   L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-  // Add amenities layer
-  esri.featureLayer({
-    url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
-    minZoom: 12,
-    onEachFeature: (feature, layer) => layer.bindPopup(`<p>${feature.properties.Name}</p>`),
-  }).addTo(this.map);
+  
 
   // Event listeners
   //  - Change basemap
