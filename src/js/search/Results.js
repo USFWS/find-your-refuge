@@ -5,6 +5,7 @@ const closest = require('closest');
 const emitter = require('../emitter');
 const helpers = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
+const { getAmenitiesByOrgName } = require('../AmenitiesService');
 
 const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
@@ -27,8 +28,22 @@ const Results = function (opts) {
   this.toggle = opts.toggleResults;
 
   emitter.on('click:refuge', (refuge) => {
-    this.empty();
-    this.render(refuge, templates.refuge);
+    const props = refuge[0].properties;
+    getAmenitiesByOrgName(props.OrgName)
+      .then((amenities) => {
+        // Add ameninty data to refuge geojson
+        const data = {
+          ...refuge[0],
+          properties: {
+            ...refuge[0].properties,
+            amenities: [
+              ...amenities.features
+            ]
+          }
+        };
+        this.empty();
+        this.render([data], templates.refuge);
+      });
   });
 
   emitter.on('search:refuge', (query) => {
@@ -58,6 +73,7 @@ const Results = function (opts) {
 
   this.list.addEventListener('click', this.handleResultClick.bind(this));
   this.toggle.addEventListener('click', this.toggleResults.bind(this));
+
 };
 
 Results.prototype.open = function () {
@@ -83,6 +99,13 @@ Results.prototype.handleResultClick = function (e) {
     const facilityName = closest(e.target, '.facility-info').querySelector('.facility-name').textContent;
     const refuge = helpers.findRefugeByName(facilityName, this.data);
     emitter.emit('zoom:refuge', refuge);
+  }
+
+  if (e.target.className === 'zoom-to-amenity') {
+    console.log(e.target);
+    const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
+    console.log(coordinates);
+    emitter.emit('zoom:amenity', coordinates);
   }
 };
 
