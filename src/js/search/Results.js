@@ -5,13 +5,16 @@ const closest = require('closest');
 const emitter = require('../emitter');
 const helpers = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
+const { getAmenitiesByOrgName } = require('../AmenitiesService');
 
 const officeListByState = require('../templates/office-list-by-state');
 const officeList = require('../templates/office-list');
+const refuge = require('../templates/refuge');
 
 const templates = {
   officeListByState,
   officeList,
+  refuge
 };
 
 const Results = function (opts) {
@@ -23,6 +26,25 @@ const Results = function (opts) {
   this.length = opts.length;
   this.loading = opts.loading;
   this.toggle = opts.toggleResults;
+
+  emitter.on('click:refuge', (refuge) => {
+    const props = refuge[0].properties;
+    getAmenitiesByOrgName(props.OrgName)
+      .then((amenities) => {
+        // Add ameninty data to refuge geojson
+        const data = {
+          ...refuge[0],
+          properties: {
+            ...refuge[0].properties,
+            amenities: [
+              ...amenities.features
+            ]
+          }
+        };
+        this.empty();
+        this.render([data], templates.refuge);
+      });
+  });
 
   emitter.on('search:refuge', (query) => {
     const results = this.find(query);
@@ -51,6 +73,7 @@ const Results = function (opts) {
 
   this.list.addEventListener('click', this.handleResultClick.bind(this));
   this.toggle.addEventListener('click', this.toggleResults.bind(this));
+
 };
 
 Results.prototype.open = function () {
@@ -77,6 +100,13 @@ Results.prototype.handleResultClick = function (e) {
     const refuge = helpers.findRefugeByName(facilityName, this.data);
     emitter.emit('zoom:refuge', refuge);
   }
+
+  if (e.target.className === 'zoom-to-amenity') {
+    console.log(e.target);
+    const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
+    console.log(coordinates);
+    emitter.emit('zoom:amenity', coordinates);
+  }
 };
 
 Results.prototype.updateLength = function (n = 0) {
@@ -98,7 +128,7 @@ Results.prototype.find = function (query) {
 };
 
 Results.prototype.render = function (results, template) {
-  if (!results || !results.length) {
+  if (!results) {
     this.list.innerHTML = '';
     this.toggle.setAttribute('aria-hidden', 'true');
     return false;

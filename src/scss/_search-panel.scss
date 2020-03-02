@@ -38,7 +38,7 @@
 }
 
 .search-results {
-  max-height: 70vh;
+  max-height: 60vh;
   overflow-y: scroll;
   margin: 0;
   padding: 0;
@@ -46,6 +46,10 @@
 
   &:empty {
     margin-bottom: 0;
+  }
+
+  svg {
+    fill: $gray;
   }
 
   .facility-name {
@@ -88,21 +92,6 @@
     }
   }
 
-  li {
-    display: flex;
-    flex-direction: row;
-    padding: .1rem;
-
-    &:hover {
-      background-color: #ccc;
-    }
-
-    svg {
-      padding: .75rem;
-      width: 35px;
-    }
-  }
-
   &.scroll::after {
     background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255, 1) 90%);
     bottom: 24px;
@@ -114,6 +103,29 @@
     width: 100%;
     text-align: center;
     z-index: 1;
+  }
+}
+
+.zoom-to-amenity {
+  background: transparent;
+  border: none;
+  width: 100%;
+}
+
+.amenities-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.amenities-list button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+  img {
+    margin-right: 1rem;
+    width: 35px;
   }
 }
 

@@ -1,6 +1,4 @@
 const L = require('leaflet');
-const esri = require('esri-leaflet');
-require('esri-leaflet-renderers');
 
 const helpers = require('./helpers');
 const emitter = require('./emitter');
@@ -15,11 +13,16 @@ const emptyGeojson = {
   features: [],
 };
 
+const zoomOptions = {
+  paddingTopLeft: [375, 50],
+  paddingBottomRight: [50, 50]
+};
+
 const onEachFeature = (feat, layer) => {
-  const props = feat.properties;
-  layer.bindPopup(`<h3>${props.OrgName}</h3>`);
+  layer.bindPopup(`<h3>${feat.properties.OrgName}</h3>`);
   layer.on('mouseover', () => layer.openPopup());
   layer.on('mouseout', () => layer.closePopup());
+  layer.on('click', () => emitter.emit('click:refuge', [feat]));
 };
 
 const Map = function (opts) {
@@ -38,34 +41,27 @@ const Map = function (opts) {
 
   layers.natGeo.addTo(this.map);
   layers.refuges.addTo(this.map);
+  layers.amenities.addTo(this.map);
 
   L.control.layers(layers.basemaps, { 'Refuge boundaries': layers.refuges }).addTo(this.map);
   L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-  // Add amenities layer
-  esri.featureLayer({
-    url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
-    minZoom: 12,
-    onEachFeature: (feature, layer) => layer.bindPopup(`<p>${feature.properties.Name}</p>`),
-  }).addTo(this.map);
-
   // Event listeners
-  //  - Change basemap
   emitter.on('set:bounds', (bounds) => this.map.fitBounds(bounds));
+
+  emitter.on('zoom:amenity', (coords) => this.map.flyTo(coords, 16, zoomOptions));
+
   emitter.on('zoom:refuge', (refuge) => {
     const coordinates = [...refuge.geometry.coordinates].reverse();
-    this.map.flyTo(coordinates, 12, {
-      paddingTopLeft: [375, 50],
-      paddingBottomRight: [50, 50],
-    });
+    this.map.flyTo(coordinates, 12, zoomOptions);
   });
+
   emitter.on('render:results', (features) => {
     const bounds = helpers.featuresToBounds(features);
     this.filtered.clearLayers();
     this.filtered.addData({ ...emptyGeojson, features });
     this.map.fitBounds(bounds, {
-      paddingTopLeft: [375, 50],
-      paddingBottomRight: [50, 50],
+      ...zoomOptions,
       maxZoom: 12,
     });
   });

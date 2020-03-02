@@ -1,4 +1,8 @@
 const L = require('leaflet');
+const esri = require('esri-leaflet');
+require('esri-leaflet-renderers');
+
+let amenityIcons = [];
 
 const natGeo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
@@ -18,6 +22,21 @@ const refuges = L.tileLayer.wms('https://gis.fws.gov/arcgis/services/FWS_Refuge_
   attribution: 'U.S. Fish and Wildlife Service',
 });
 
+const amenities = esri.featureLayer({
+  url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
+  minZoom: 12,
+  onEachFeature: (feature, layer) => layer.bindPopup(`<p>${feature.properties.Name}</p>`),
+});
+
+const getAmenityIcons = () => amenityIcons;
+
+const getAmenityIcon = (category) => amenityIcons.find((icon) => icon.value === category);
+
+amenities.metadata((err, metadata) => {
+  if (err) console.log(err);
+  amenityIcons = metadata.drawingInfo.renderer.uniqueValueInfos;
+});
+
 const basemaps = {
   'National Geographic': natGeo,
   'Gray Canvas': grayCanvas,
@@ -28,4 +47,7 @@ module.exports = {
   grayCanvas,
   refuges,
   basemaps,
+  amenities,
+  getAmenityIcons,
+  getAmenityIcon
 };
