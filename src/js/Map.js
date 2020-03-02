@@ -51,10 +51,15 @@ const Map = function (opts) {
 
   emitter.on('zoom:amenity', (coords) => this.map.flyTo(coords, 16, zoomOptions));
 
-  emitter.on('zoom:refuge', (refuge) => {
-    const coordinates = [...refuge.geometry.coordinates].reverse();
-    this.map.flyTo(coordinates, 12, zoomOptions);
-  });
+  // emitter.on('zoom:refuge', (refuge) => {
+  //   const coordinates = [...refuge.geometry.coordinates].reverse();
+  //   this.map.flyTo(coordinates, 12, zoomOptions);
+  // });
+
+  // emitter.on('zoom:refugefeature', (refuge) => {
+  //   const bounds = L.geoJSON(refuge).getBounds();
+  //   this.map.flyToBounds(bounds, zoomOptions);
+  // });
 
   emitter.on('render:results', (features) => {
     const bounds = helpers.featuresToBounds(features);
