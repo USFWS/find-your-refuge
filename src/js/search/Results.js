@@ -29,7 +29,6 @@ const Results = function (opts) {
 
   const getAndRenderAmenities = (refuge) => {
     const props = refuge.properties;
-    console.log(props);
     getAmenitiesByOrgName(props.OrgName)
       .then((amenities) => {
         // Add ameninty data to refuge geojson
