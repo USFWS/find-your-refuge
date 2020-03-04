@@ -1,4 +1,4 @@
-const { getAmenityIcon } = require('../layers');
+const { getAmenityIcon } = require('../icons');
 
 const createAmenityItem = (amenity) => {
   const icon = getAmenityIcon(amenity.properties.Category);
@@ -6,7 +6,7 @@ const createAmenityItem = (amenity) => {
   return `
     <li>
       <button class="zoom-to-amenity" data-coordinates="${JSON.stringify(coords)}" data-id="${amenity.id}">
-        <img src="data:image/png;base64,${icon.symbol.imageData}" alt="${icon.label} icon" /> ${amenity.properties.Name}
+        <img src="${icon.dataUri}" alt="${icon.label} icon" /> ${amenity.properties.Name}
       </button>
     </li>
   `

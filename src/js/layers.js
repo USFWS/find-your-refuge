@@ -4,8 +4,6 @@ require('esri-leaflet-renderers');
 
 const emitter = require('./emitter');
 
-let amenityIcons = [];
-
 const natGeo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
   maxZoom: 16,
@@ -30,22 +28,9 @@ const amenities = esri.featureLayer({
     layer.bindPopup(`<p>${feature.properties.Name}</p>`)
     layer.on('click', (e) => {
       // Analytics event
-      emitter.emit('select:amenity', {
-        OrgName: e.target.feature.properties.OrgName,
-        Name: e.target.feature.properties.Name
-      });
-      emitter.emit('zoom:amenity', [...e.target.feature.geometry.coordinates].reverse());
+      emitter.emit('select:amenity', feature);
     })
   },
-});
-
-const getAmenityIcons = () => amenityIcons;
-
-const getAmenityIcon = (category) => amenityIcons.find((icon) => icon.value === category);
-
-amenities.metadata((err, metadata) => {
-  if (err) console.log(err);
-  amenityIcons = metadata.drawingInfo.renderer.uniqueValueInfos;
 });
 
 const basemaps = {
@@ -58,7 +43,5 @@ module.exports = {
   grayCanvas,
   refuges,
   basemaps,
-  amenities,
-  getAmenityIcons,
-  getAmenityIcon
+  amenities
 };

@@ -23,10 +23,17 @@ const Search = function (opts) {
       type: this.state
     });
   }, 2500));
+
+  // Select the appropriate radio button based on an updated query parameter
+  emitter.on('update:search', (params) => {
+    const radioButton = this.radios.filter((r) => r.value === params.method);
+    if (radioButton[0]) radioButton[0].checked = true;
+  });
 };
 
 Search.prototype.emitQuery = function (e) {
   const query = e.target.value;
+  if (!query.length) emitter.emit('clear:query');
   const isRefuge = this.state === 'refuge';
   const isZip = this.state === 'zipcode';
   const isState = this.state === 'state';

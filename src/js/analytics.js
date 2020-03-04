@@ -23,9 +23,11 @@ emitter.on('search:term', ({ query, type }) => {
 });
 
 // Selected an amenity in search results
-emitter.on('select:amenity', ({ OrgName: refuge, Name: amenity}) => {
+emitter.on('select:amenity', (amenity) => {
+  const refuge = amenity.properties.OrgName;
+  const entity = amenity.properties.Name;
   analytics('event', 'select:amenity', {
-    event_label: `${refuge}: ${amenity}`,
+    event_label: `${refuge}: ${entity}`,
     event_category: app
   });
 });
@@ -49,7 +51,7 @@ emitter.on('zoom:refuge', (refuge) => {
 // Selected refuge point from map
 emitter.on('click:refuge', (refuge) => {
   analytics('event', 'click:refuge', {
-    event_label: refuge[0].properties.OrgName,
+    event_label: refuge.properties.OrgName,
     event_category: app
   });
 });

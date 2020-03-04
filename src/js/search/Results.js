@@ -2,9 +2,10 @@ const L = require('leaflet');
 const leafletKnn = require('leaflet-knn');
 
 const emitter = require('../emitter');
-const { findRefugeByName } = require('../helpers');
+const { findRefugeByName, sortByName } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
+const { getRefugeByName } = require('../RefugeService');
 
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
@@ -27,7 +28,7 @@ const Results = function (opts) {
   // Analytics events
   this.select.addEventListener('change', (e) => emitter.emit('select:state', e.target.value));
 
-  const getAndRenderAmenities = (refuge) => {
+  const getAndRenderAmenities = (refuge, cancelZoomToFeatures) => {
     const props = refuge.properties;
     getAmenitiesByOrgName(props.OrgName)
       .then((amenities) => {
@@ -42,12 +43,22 @@ const Results = function (opts) {
           }
         };
         this.empty();
-        this.render([data], templates.refuge);
+        this.render([data], templates.refuge, cancelZoomToFeatures);
       });
   }
 
+  // Sets the value of the appropriate input based on an updated query parameter
+  emitter.on('update:search', ({ method, query }) => {
+    if (!method || !query) return;
+    const input = this.getInput(method);
+    if (input) input.value = query;
+    if (method === 'state') this.searchState(query);
+    if (method === 'zipcode') this.searchZipcode(query);
+    if (method === 'refuge') this.searchFacility(query);
+  });
+
   // Clicked on refuge on the map
-  emitter.on('click:refuge', (refuges) => getAndRenderAmenities(refuges[0]));
+  emitter.on('click:refuge', (refuge) => getAndRenderAmenities(refuge));
 
   // Clicked on refuge in search results
   emitter.on('zoom:refuge', (refuge) => getAndRenderAmenities(refuge));
@@ -56,6 +67,11 @@ const Results = function (opts) {
   emitter.on('zoom:refugefeature', (feature) => {
     const refuge = findRefugeByName(feature.properties.ORGNAME, this.data);
     getAndRenderAmenities(refuge);
+  });
+
+  emitter.on('select:amenity', (amenity) => {
+    const refuge = findRefugeByName(amenity.properties.OrgName, this.data);
+    getAndRenderAmenities(refuge, true);
   });
 
   emitter.on('search:refuge', (query) => {
@@ -88,6 +104,36 @@ const Results = function (opts) {
   this.toggle.addEventListener('click', this.toggleResults.bind(this));
 };
 
+Results.prototype.activateInput = function (input) {
+  this.empty();
+  [this.textInput, this.select].forEach((i) => i.parentNode.setAttribute('aria-hidden', 'true'));
+  input.parentNode.setAttribute('aria-hidden', 'false');
+};
+
+Results.prototype.searchFacility = function (query) {
+  const results = this.find(query);
+  this.activateInput(this.textInput);
+  this.message.innerHTML = 'Search by station name or state';
+  if (!results) return;
+  this.render(results.sort(sortByName), templates.officeList);
+}
+
+Results.prototype.searchZipcode = function (zipcode) {
+  this.activateInput(this.textInput);
+  this.nearest(zipcode);
+}
+
+Results.prototype.searchState = function (query) {
+  this.loading.setAttribute('aria-hidden', 'false');
+  const results = this.findByState(query);
+  this.activateInput(this.select);
+  this.render(results.sort(sortByName), templates.officeList);
+}
+
+Results.prototype.findByState = function (query) {
+  return this.data.filter(({ properties: props }) => props.State_Name ? props.State_Name.includes(query) : false);
+};
+
 Results.prototype.open = function () {
   this.list.classlist.remove('closed');
 };
@@ -114,9 +160,6 @@ Results.prototype.handleResultClick = function (e) {
   }
 
   if (e.target.className === 'zoom-to-amenity') {
-    const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
-    emitter.emit('zoom:amenity', coordinates);
-    //Analytics event
     getAmenityById(e.target.getAttribute('data-id'))
       .then((amenity) => emitter.emit('select:amenity', amenity));
   }
@@ -140,7 +183,7 @@ Results.prototype.find = function (query) {
   });
 };
 
-Results.prototype.render = function (results, template) {
+Results.prototype.render = function (results, template, cancelZoomToFeatures) {
   if (!results.length) {
     this.list.innerHTML = '';
     this.toggle.setAttribute('aria-hidden', 'true');
@@ -150,7 +193,8 @@ Results.prototype.render = function (results, template) {
   this.list.innerHTML = template(results);
   this.updateLength(results.length);
   this.toggle.setAttribute('aria-hidden', 'false');
-  emitter.emit('render:results', results);
+  this.loading.setAttribute('aria-hidden', 'true');
+  if (!cancelZoomToFeatures) emitter.emit('render:results', results);
 };
 
 Results.prototype.nearest = function (zipcode) {
@@ -185,6 +229,19 @@ Results.prototype.nearest = function (zipcode) {
       emitter.emit('found:zipcode', geojson);
     })
     .catch(() => { this.message.innerHTML = 'The number you entered did not match an existing zipcode.'; });
+};
+
+Results.prototype.getInput = function (state) {
+  switch (state) {
+    case 'state':
+      return this.select;
+    case 'zipcode':
+      return this.textInput;
+    case 'refuge':
+      return this.textInput;
+    default:
+      return false;
+  };
 };
 
 module.exports = Results;

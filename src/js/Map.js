@@ -22,7 +22,7 @@ const onEachFeature = (feat, layer) => {
   layer.bindPopup(`<h3>${feat.properties.OrgName}</h3>`);
   layer.on('mouseover', () => layer.openPopup());
   layer.on('mouseout', () => layer.closePopup());
-  layer.on('click', () => emitter.emit('click:refuge', [feat]));
+  layer.on('click', () => emitter.emit('click:refuge', feat));
 };
 
 const Map = function (opts) {
@@ -47,9 +47,10 @@ const Map = function (opts) {
   L.control.zoom({ position: 'topright' }).addTo(this.map);
 
   // Event listeners
-  emitter.on('set:bounds', (bounds) => this.map.fitBounds(bounds));
-
-  emitter.on('zoom:amenity', (coords) => this.map.flyTo(coords, 16, zoomOptions));
+  emitter.on('set:bounds', (bounds) => {
+    if (L.latLngBounds(bounds).isValid()) this.map.fitBounds(bounds);
+  });
+  emitter.on('select:amenity', (amenity) => this.map.flyTo([...amenity.geometry.coordinates].reverse(), 16, zoomOptions));
 
   // emitter.on('zoom:refuge', (refuge) => {
   //   const coordinates = [...refuge.geometry.coordinates].reverse();
