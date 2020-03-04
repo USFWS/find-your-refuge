@@ -3,7 +3,7 @@ const querystring = require('query-string');
 const camelCase = require('camel-case');
 
 const { getRefugeBoundsByName, getRefugeByName } = require('./RefugeService');
-const { getAmenityBounds } = require('./AmenitiesService');
+const { getAmenityByNameAndRefuge } = require('./AmenitiesService');
 const { titleCase } = require('./helpers');
 const emitter = require('./emitter');
 const GLOBAL_BOUNDS = require('./bounds');
@@ -22,7 +22,7 @@ const DeepLink = function (window) {
   emitter.on('click:refuge', (e) => this.updateHistory({ type: 'refuge', data: e.properties.OrgName }));
   emitter.on('zoom:refuge', (e) => this.updateHistory({ type: 'refuge', data: e.properties.OrgName }));
   emitter.on('zoom:refugefeature', (e) => this.updateHistory({ type: 'refuge', data: titleCase(e.properties.ORGNAME) }));
-  emitter.on('select:amenity', (e) => this.updateHistory({ type: 'amenity', data: { amenity: e.Name, refuge: e.OrgName } }));
+  emitter.on('select:amenity', (e) => this.updateHistory({ type: 'amenity', data: { amenity: e.properties.Name, refuge: e.properties.OrgName } }));
 
   this.processQueryString(window.location.search);
 };
@@ -67,7 +67,8 @@ DeepLink.prototype.processQueryString = function (qs) {
     emitter.emit('click:refuge', refuge);
     // getRefugeBoundsByName(parsed.refuge).then((bounds) => emitter.emit('set:bounds', bounds));
   }
-  if (parsed.amenity) getAmenityBounds(parsed.amenity, parsed.refuge).then((bounds) => emitter.emit('set:bounds', bounds));
+  if (parsed.amenity) getAmenityByNameAndRefuge(parsed.amenity, parsed.refuge)
+    .then((amenity) => emitter.emit('select:amenity', amenity));
 
   const params = {};
   if (parsed.query) params.query = parsed.query;
