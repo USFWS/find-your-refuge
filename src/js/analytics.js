@@ -49,7 +49,7 @@ emitter.on('zoom:refuge', (refuge) => {
 // Selected refuge point from map
 emitter.on('click:refuge', (refuge) => {
   analytics('event', 'click:refuge', {
-    event_label: refuge[0].properties.OrgName,
+    event_label: refuge.properties.OrgName,
     event_category: app
   });
 });
