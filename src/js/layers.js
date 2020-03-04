@@ -28,11 +28,7 @@ const amenities = esri.featureLayer({
     layer.bindPopup(`<p>${feature.properties.Name}</p>`)
     layer.on('click', (e) => {
       // Analytics event
-      emitter.emit('select:amenity', {
-        OrgName: e.target.feature.properties.OrgName,
-        Name: e.target.feature.properties.Name
-      });
-      emitter.emit('zoom:amenity', [...e.target.feature.geometry.coordinates].reverse());
+      emitter.emit('select:amenity', feature);
     })
   },
 });
