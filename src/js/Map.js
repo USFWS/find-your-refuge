@@ -50,9 +50,7 @@ const Map = function (opts) {
   emitter.on('set:bounds', (bounds) => {
     if (L.latLngBounds(bounds).isValid()) this.map.fitBounds(bounds);
   });
-  emitter.on('zoom:amenity', (coords) => {
-    if (L.latLngBounds(coords).isValid()) this.map.flyTo(coords, 16, zoomOptions)
-  });
+  emitter.on('select:amenity', (amenity) => this.map.flyTo([...amenity.geometry.coordinates].reverse(), 16, zoomOptions));
 
   // emitter.on('zoom:refuge', (refuge) => {
   //   const coordinates = [...refuge.geometry.coordinates].reverse();
