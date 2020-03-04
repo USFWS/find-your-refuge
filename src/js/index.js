@@ -2,7 +2,8 @@ const helpers = require('./helpers');
 const Map = require('./Map');
 const Search = require('./search/Search');
 const Results = require('./search/Results');
-const deepLink = require('./deep-link');
+const DeepLink = require('./deep-link');
+const rs = require('./RefugeService');
 require('./analytics');
 
 const searchPanel = document.querySelector('.search-panel');
@@ -37,6 +38,7 @@ const init = () => {
         .filter((state) => state !== ' ')
         .sort();
       uniqueStates.forEach((state) => addOptionToSelect(state, select));
+      rs.setRefugeData(data);
       const geojson = { ...data };
       const map = new Map({ data: geojson });
       const search = new Search({
@@ -54,7 +56,7 @@ const init = () => {
         loading,
         toggleResults,
       });
-      deepLink.processQueryString(window.location.search);
+      new DeepLink(window);
     });
 };
 
