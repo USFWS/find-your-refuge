@@ -5,6 +5,7 @@ const emitter = require('../emitter');
 const { findRefugeByName, sortByName } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
+const { getRefugeByName } = require('../RefugeService');
 
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
@@ -27,7 +28,7 @@ const Results = function (opts) {
   // Analytics events
   this.select.addEventListener('change', (e) => emitter.emit('select:state', e.target.value));
 
-  const getAndRenderAmenities = (refuge) => {
+  const getAndRenderAmenities = (refuge, cancelZoomToFeatures) => {
     const props = refuge.properties;
     getAmenitiesByOrgName(props.OrgName)
       .then((amenities) => {
@@ -42,7 +43,7 @@ const Results = function (opts) {
           }
         };
         this.empty();
-        this.render([data], templates.refuge);
+        this.render([data], templates.refuge, cancelZoomToFeatures);
       });
   }
 
@@ -66,6 +67,11 @@ const Results = function (opts) {
   emitter.on('zoom:refugefeature', (feature) => {
     const refuge = findRefugeByName(feature.properties.ORGNAME, this.data);
     getAndRenderAmenities(refuge);
+  });
+
+  emitter.on('select:amenity', (amenity) => {
+    const refuge = findRefugeByName(amenity.properties.OrgName, this.data);
+    getAndRenderAmenities(refuge, true);
   });
 
   emitter.on('search:refuge', (query) => {
@@ -154,9 +160,6 @@ Results.prototype.handleResultClick = function (e) {
   }
 
   if (e.target.className === 'zoom-to-amenity') {
-    const coordinates = JSON.parse(e.target.getAttribute('data-coordinates'));
-    emitter.emit('zoom:amenity', coordinates);
-    //Analytics event
     getAmenityById(e.target.getAttribute('data-id'))
       .then((amenity) => emitter.emit('select:amenity', amenity));
   }
@@ -180,9 +183,8 @@ Results.prototype.find = function (query) {
   });
 };
 
-Results.prototype.render = function (results, template) {
+Results.prototype.render = function (results, template, cancelZoomToFeatures) {
   if (!results.length) {
-    console.log(results);
     this.list.innerHTML = '';
     this.toggle.setAttribute('aria-hidden', 'true');
     return false;
@@ -192,7 +194,7 @@ Results.prototype.render = function (results, template) {
   this.updateLength(results.length);
   this.toggle.setAttribute('aria-hidden', 'false');
   this.loading.setAttribute('aria-hidden', 'true');
-  emitter.emit('render:results', results);
+  if (!cancelZoomToFeatures) emitter.emit('render:results', results);
 };
 
 Results.prototype.nearest = function (zipcode) {
