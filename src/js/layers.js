@@ -4,8 +4,6 @@ require('esri-leaflet-renderers');
 
 const emitter = require('./emitter');
 
-let amenityIcons = [];
-
 const natGeo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
   maxZoom: 16,
@@ -39,15 +37,6 @@ const amenities = esri.featureLayer({
   },
 });
 
-const getAmenityIcons = () => amenityIcons;
-
-const getAmenityIcon = (category) => amenityIcons.find((icon) => icon.value === category);
-
-amenities.metadata((err, metadata) => {
-  if (err) console.log(err);
-  amenityIcons = metadata.drawingInfo.renderer.uniqueValueInfos;
-});
-
 const basemaps = {
   'National Geographic': natGeo,
   'Gray Canvas': grayCanvas,
@@ -58,7 +47,5 @@ module.exports = {
   grayCanvas,
   refuges,
   basemaps,
-  amenities,
-  getAmenityIcons,
-  getAmenityIcon
+  amenities
 };
