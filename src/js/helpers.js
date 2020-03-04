@@ -54,10 +54,7 @@ const titleCase = (str) => {
   }).join(' ');
 }
 
-const extentToLatLngBounds = ({ extent: ext }) => {
-  if (!ext) return false;
-  [[ext.ymin, ext.xmin], [ext.ymax, ext.xmax]]
-};
+const extentToLatLngBounds = ({ extent: ext }) => (ext ? [[ext.ymin, ext.xmin], [ext.ymax, ext.xmax]] : false);
 
 module.exports = {
   sortByName,
