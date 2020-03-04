@@ -54,11 +54,17 @@ const titleCase = (str) => {
   }).join(' ');
 }
 
+const extentToLatLngBounds = ({ extent: ext }) => {
+  if (!ext) return false;
+  [[ext.ymin, ext.xmin], [ext.ymax, ext.xmax]]
+};
+
 module.exports = {
   sortByName,
   getIconPath,
   featuresToBounds,
   findRefugeByName,
   unique,
-  titleCase
+  titleCase,
+  extentToLatLngBounds
 };
