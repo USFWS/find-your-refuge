@@ -1,3 +1,5 @@
+const { extentToLatLngBounds } = require('./helpers');
+
 const AMENITIES_URL = 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0/query';
 
 const getAmenitiesByOrgName = (orgName) => {
@@ -15,7 +17,16 @@ const getAmenityById = (id) => {
     .catch(console.log);
 };
 
+const getAmenityBounds = (name, orgName) => {
+  const API_URL = `${AMENITIES_URL}?f=pjson&outSR=4326&returnExtentOnly=true&where=OrgName='${encodeURIComponent(orgName)}'+AND+Name='${encodeURIComponent(name)}'`;
+  return fetch(API_URL)
+    .then((res) => res.json())
+    .then(extentToLatLngBounds)
+    .catch(console.log);
+};
+
 module.exports = {
   getAmenitiesByOrgName,
-  getAmenityById
+  getAmenityById,
+  getAmenityBounds
 }
