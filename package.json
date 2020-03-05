@@ -67,8 +67,10 @@
     "debounce": "^1.2.0",
     "esri-leaflet": "^2.3.3",
     "esri-leaflet-renderers": "^2.0.6",
+    "flatten": "^1.0.3",
     "leaflet": "^1.6.0",
     "leaflet-knn": "^0.1.0",
+    "madison": "^2.0.0",
     "query-string": "^5.1.1"
   }
 }

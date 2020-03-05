@@ -16,7 +16,7 @@ const refugeTemplate = (refuges) => {
   const props = refuges[0].properties;
   return `
     <li>
-      <h3>${props.OrgName} in ${props.State_Name}</h3>
+      <h3>${props.OrgName} in ${props.State_Label}</h3>
       <p><a href="${props.URL}" target="_blank">Visit us on the web</a></p>
       ${props.amenities.length ? `<h4>Amenities</h4>` : ''}
       <ul class="amenities-list">

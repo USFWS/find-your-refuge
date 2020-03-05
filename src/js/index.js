@@ -17,29 +17,29 @@ const length = searchPanel.querySelector('.search-results-length');
 const loading = searchPanel.querySelector('.loading');
 const toggleResults = searchPanel.querySelector('.toggle-results');
 
-const addOptionToSelect = (value, select) => {
-  const option = document.createElement('option');
-  option.value = value;
-  option.text = value;
-  select.add(option);
+const addOptionsToSelect = (values, select) => {
+  values.forEach((value) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.text = value;
+    select.add(option);
+  });
 };
 
 // Start the app
 const init = () => {
-  // const API_URL = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/FWS_HQ_Visitor_Services/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson';
-  // const API_URL = "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0/query?where=Category='11'&outFields=*&outSR=4326&f=geojson";
-  const API_URL = 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/CMT_NWRs_WMDs/FeatureServer/0/query?where=1+%3D+1&outFields=State_Name%2COrgName%2CURL%2Clabel&returnGeometry=true&f=pgeojson&token=';
+  const API_URL = 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_NWRS_HQ_HuntFishStation/FeatureServer/0/query?where=1+%3D+1&outFields=*&f=pgeojson';
 
   fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
-      const uniqueStates = helpers.unique(data.features
-        .map((f) => f.properties.State_Name))
-        .filter((state) => state !== ' ')
-        .sort();
-      uniqueStates.forEach((state) => addOptionToSelect(state, select));
+      const geodata = { ...data, features: data.features.map(helpers.updateFeatureStateName) };
+      const states = helpers.flatten(geodata.features
+        .map((f) => f.properties.State_Array))
+        .filter((s) => s);
+      addOptionsToSelect(helpers.getUniqueStates(states).sort(), select);
       rs.setRefugeData(data);
-      const geojson = { ...data };
+      const geojson = { ...geodata };
       const map = new Map({ data: geojson });
       const search = new Search({
         input,
