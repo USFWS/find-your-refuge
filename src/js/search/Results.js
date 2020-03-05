@@ -196,7 +196,7 @@ Results.prototype.render = function (results, template, cancelZoomToFeatures) {
 
 Results.prototype.nearest = function (zipcode) {
   if (!fiveDigitNumberRegex.test(zipcode)) {
-    this.message.innerHTML = 'You must provide a valid five-digit zip code.';
+    this.message.innerHTML = 'Provide a valid five-digit zip code.';
     return false;
   }
   this.message.innerHTML = '';
