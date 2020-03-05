@@ -7,7 +7,6 @@ const Search = function (opts) {
   this.radios = opts.radios;
   this.state = 'refuge';
 
-  emitter.on('query', (query) => { this.input.value = query; });
   emitter.on('method', (method) => {
     const radioButton = this.radios.filter((r) => r.value === method);
     if (radioButton[0]) radioButton[0].click();
