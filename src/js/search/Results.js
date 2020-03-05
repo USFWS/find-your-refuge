@@ -47,8 +47,7 @@ const Results = function (opts) {
   }
 
   // Sets the value of the appropriate input based on an updated query parameter
-  emitter.on('update:search', ({ method, query }) => {
-    if (!method || !query) return;
+  emitter.on('update:search', ({ method, query = '' }) => {
     const input = this.getInput(method);
     if (input) input.value = query;
     if (method === 'state') this.searchState(query);
