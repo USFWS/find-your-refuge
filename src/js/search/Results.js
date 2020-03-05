@@ -129,8 +129,7 @@ Results.prototype.searchState = function (query) {
 }
 
 Results.prototype.findByState = function (query) {
-  return this.data.filter(({ properties: props }) => 
-    props.State_Name ? props.State_Name.toLowerCase() === query.toLowerCase() : false);
+  return this.data.filter(({ properties: props }) => props.State_Array.includes(query));
 };
 
 Results.prototype.toggleResults = function () {
