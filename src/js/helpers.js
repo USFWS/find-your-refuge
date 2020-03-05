@@ -56,6 +56,8 @@ const titleCase = (str) => {
 
 const extentToLatLngBounds = ({ extent: ext }) => (ext ? [[ext.ymin, ext.xmin], [ext.ymax, ext.xmax]] : false);
 
+const fiveDigitNumberRegex = /\b\d{5}\b/;
+
 module.exports = {
   sortByName,
   getIconPath,
@@ -63,5 +65,6 @@ module.exports = {
   findRefugeByName,
   unique,
   titleCase,
-  extentToLatLngBounds
+  extentToLatLngBounds,
+  fiveDigitNumberRegex
 };
