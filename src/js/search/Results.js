@@ -5,7 +5,6 @@ const emitter = require('../emitter');
 const { findRefugeByName, sortByName } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
-const { getRefugeByName } = require('../RefugeService');
 
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
