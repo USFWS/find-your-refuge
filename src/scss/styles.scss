@@ -1,6 +1,8 @@
 $blue: #0055af;
 $gray: #848484;
 
+$break-md: 600px;
+
 @font-face {
   font-family: "Merriweather";
   src: url("../fonts/merriweather-bold-webfont.woff2") format("woff2"),
@@ -26,15 +28,6 @@ $gray: #848484;
     url("../fonts/SourceSansPro-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: bold;
-}
-
-html {
-  box-sizing: border-box;
-  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-}
-
-h1 {
-  font-family: Merriweather, Georgia, serif;
 }
 
 @import 'normalize';
