@@ -7,10 +7,6 @@ const Search = function (opts) {
   this.radios = opts.radios;
   this.state = 'refuge';
 
-  emitter.on('method', (method) => {
-    const radioButton = this.radios.filter((r) => r.value === method);
-    if (radioButton[0]) radioButton[0].click();
-  });
   this.input.addEventListener('input', debounce(this.emitQuery.bind(this), 400));
   this.select.addEventListener('input', this.emitQuery.bind(this));
   this.radios.forEach((r) => r.addEventListener('click', this.toggleSearchInterface.bind(this)));
