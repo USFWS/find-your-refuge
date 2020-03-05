@@ -134,16 +134,14 @@ Results.prototype.findByState = function (query) {
     props.State_Name ? props.State_Name.toLowerCase() === query.toLowerCase() : false);
 };
 
-Results.prototype.open = function () {
-  this.list.classlist.remove('closed');
-};
-
-Results.prototype.close = function () {
-  this.list.classlist.add('closed');
-};
-
 Results.prototype.toggleResults = function () {
-  this.list.classList.toggle('closed');
+  if (this.list.classList.contains('closed')) {
+    this.list.classList.remove('closed');
+    this.toggle.textContent = 'Hide results';
+  } else {
+    this.list.classList.add('closed');
+    this.toggle.textContent = 'Show results';
+  }
 };
 
 Results.prototype.empty = function () {
