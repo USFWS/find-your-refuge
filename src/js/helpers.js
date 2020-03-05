@@ -1,5 +1,7 @@
 const L = require('leaflet');
 const unique = require('array-unique').immutable;
+const madison = require('madison');
+const flatten = require('flatten');
 
 const sortByName = (a, b) => {
   const aName = a.properties.OrgName.toUpperCase();
@@ -38,6 +40,8 @@ const getIconPath = (type) => {
   }
 };
 
+const getUniqueStates = (states) => unique(states);
+
 const findRefugeByName = (name, data) => data.find((r) => r.properties.OrgName.toLowerCase() === name.toLowerCase());
 
 const featuresToBounds = (features) => features.reduce(
@@ -58,6 +62,21 @@ const extentToLatLngBounds = ({ extent: ext }) => (ext ? [[ext.ymin, ext.xmin], 
 
 const fiveDigitNumberRegex = /\b\d{5}\b/;
 
+const updateFeatureStateName = (feat) => {
+  const state = feat.properties.State;
+  let array;
+  if (state.includes('USMOI')) array = ['U.S. Minor Outlying Islands'];
+  else array = state ? state.split('/').map(madison.getStateName) : [''];
+  return {
+    ...feat,
+    properties: {
+      ...feat.properties,
+      State_Array: array,
+      State_Label: array.join(', '),
+    },
+  };
+};
+
 module.exports = {
   sortByName,
   getIconPath,
@@ -66,5 +85,8 @@ module.exports = {
   unique,
   titleCase,
   extentToLatLngBounds,
-  fiveDigitNumberRegex
+  fiveDigitNumberRegex,
+  updateFeatureStateName,
+  flatten,
+  getUniqueStates
 };
