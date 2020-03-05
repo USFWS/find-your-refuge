@@ -1,9 +1,25 @@
 .title-bar {
-  display: flex;
   align-items: center;
+  display: flex;
+  justify-content: center;
 
   img {
-    width: 65px;
+    width: 45px;
+
+    @media(min-width: $break-md) {
+      width: 65px;
+    }
+  }
+}
+
+.page-title {
+  color: $blue;
+  font-size: 24px;
+  margin: .25rem .5rem;
+  text-align: center;
+
+  @media (min-width: $break-md) {
+    font-size: 30px;
   }
 }
 
@@ -13,11 +29,16 @@
   border-radius: 5px;
   box-sizing: border-box;
   left: 13px;
+  max-height: 85vh;
   max-width: 350px !important;
   padding: .5rem;
   position: fixed;
   top: 13px;
   z-index: 1000;
+
+  @media(min-width: $break-md) {
+    max-height: 95vh;
+  }
 }
 
 .search-results.closed {
@@ -25,14 +46,18 @@
 }
 
 .toggle-results {
+  background: $blue;
   border-radius: 5px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: #e5e5e5;
+  bottom: 0;
+  color: white;
   display: block;
-  width: 100%;
+  margin-left: -.5rem;
+  position: sticky;
+  width: calc(100% + 1rem);
 
-  &[aria-hidden="true"] {
+  &[aria-hidden=true] {
     display: none;
   }
 }
@@ -216,14 +241,7 @@ input[type="radio"]:not(:checked) ~ label {
   padding: .5rem 1rem;
 }
 
-.page-title {
-  color: $blue;
-  margin: .25rem;
-  text-align: center;
-}
-
 .message {
-  color: $blue;
   font-style: italic;
   margin: .5rem 0;
   text-align: center;
