@@ -1,6 +1,7 @@
 .title-bar {
-  display: flex;
   align-items: center;
+  display: flex;
+  justify-content: center;
 
   img {
     width: 45px;
@@ -8,6 +9,17 @@
     @media(min-width: $break-md) {
       width: 65px;
     }
+  }
+}
+
+.page-title {
+  color: $blue;
+  font-size: 24px;
+  margin: .25rem .5rem;
+  text-align: center;
+
+  @media (min-width: $break-md) {
+    font-size: 30px;
   }
 }
 
@@ -229,14 +241,7 @@ input[type="radio"]:not(:checked) ~ label {
   padding: .5rem 1rem;
 }
 
-.page-title {
-  color: $blue;
-  margin: .25rem;
-  text-align: center;
-}
-
 .message {
-  color: $blue;
   font-style: italic;
   margin: .5rem 0;
   text-align: center;
