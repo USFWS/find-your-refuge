@@ -2,7 +2,7 @@ const L = require('leaflet');
 const leafletKnn = require('leaflet-knn');
 
 const emitter = require('../emitter');
-const { findRefugeByName, sortByName } = require('../helpers');
+const { findRefugeByName, sortByName, fiveDigitNumberRegex } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
 const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
 
@@ -195,7 +195,7 @@ Results.prototype.render = function (results, template, cancelZoomToFeatures) {
 };
 
 Results.prototype.nearest = function (zipcode) {
-  if (zipcode.length !== 5) {
+  if (!fiveDigitNumberRegex.test(zipcode)) {
     this.message.innerHTML = 'You must provide a valid five-digit zip code.';
     return false;
   }
