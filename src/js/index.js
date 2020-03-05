@@ -28,7 +28,7 @@ const addOptionsToSelect = (values, select) => {
 
 // Start the app
 const init = () => {
-  const API_URL = 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_NWRS_HQ_HuntFishStation/FeatureServer/0/query?where=1+%3D+1&outFields=*&f=pgeojson';
+  const API_URL = "https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_NWRS_HQ_HuntFishStation/FeatureServer/0/query?where=OrgType!='NFH'&outFields=*&f=pgeojson";
 
   fetch(API_URL)
     .then((res) => res.json())
