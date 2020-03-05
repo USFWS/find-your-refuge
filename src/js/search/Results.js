@@ -225,7 +225,10 @@ Results.prototype.nearest = function (zipcode) {
       findAndDisplayNearestOffices([...coordinates]);
       emitter.emit('found:zipcode', geojson);
     })
-    .catch(() => { this.message.innerHTML = 'The number you entered did not match an existing zipcode.'; });
+    .catch(() => { 
+      this.loading.setAttribute('aria-hidden', 'true');
+      this.message.innerHTML = 'The number you entered did not match an existing zipcode.';
+    });
 };
 
 Results.prototype.getInput = function (state) {
