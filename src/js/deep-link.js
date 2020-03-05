@@ -28,7 +28,6 @@ const DeepLink = function (window) {
 };
 
 DeepLink.prototype.updateHistory = function (update) {
-  console.log('updateHistory', update);
   let params = {
     ...querystring.parse(this.window.location.search),
     ...(update.method && { method: update.method }),
