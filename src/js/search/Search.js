@@ -9,7 +9,7 @@ const Search = function (opts) {
 
   this.input.addEventListener('input', debounce(this.emitQuery.bind(this), 400));
   this.select.addEventListener('input', this.emitQuery.bind(this));
-  this.radios.forEach((r) => r.addEventListener('click', this.toggleSearchInterface.bind(this)));
+  this.radios.forEach((r) => r.addEventListener('click', (e) => this.toggleSearchInterface(e.target.value)));
 
   // Analytics events
   this.input.addEventListener('input', debounce((e) => {
@@ -23,21 +23,18 @@ const Search = function (opts) {
   emitter.on('update:search', (params) => {
     const radioButton = this.radios.filter((r) => r.value === params.method);
     if (radioButton[0]) radioButton[0].checked = true;
+    if (params.method) this.state = params.method;
   });
 };
 
 Search.prototype.emitQuery = function (e) {
   const query = e.target.value;
   if (!query.length) emitter.emit('clear:query');
-  const isRefuge = this.state === 'refuge';
-  const isZip = this.state === 'zipcode';
-  const isState = this.state === 'state';
-  if (isRefuge || isState && query.length) emitter.emit(`search:${this.state}`, query);
-  else if (isZip && query.length) emitter.emit('search:zipcode', query);
+  if (query.length) emitter.emit(`search:${this.state}`, query);
 };
 
-Search.prototype.toggleSearchInterface = function (e) {
-  this.state = e.target.id;
+Search.prototype.toggleSearchInterface = function (state) {
+  this.state = state;
   const value = this.state === 'state' ? this.select.value : this.input.value;
   emitter.emit(`search:${this.state}`, value);
   this.input.focus();
