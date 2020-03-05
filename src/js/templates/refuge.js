@@ -14,7 +14,6 @@ const createAmenityItem = (amenity) => {
 
 const refugeTemplate = (refuges) => {
   const props = refuges[0].properties;
-  console.log(props);
   return `
     <li>
       <h3>${props.OrgName} in ${props.State_Label}</h3>
