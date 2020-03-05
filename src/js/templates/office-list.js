@@ -7,7 +7,7 @@ const createListItem = ({ properties: props }) => `
 
       <div class="facility-info">
         <p class="facility-name">${props.OrgName}</p>
-        <p class="facility-location">${props.State_Name}</p>
+        <p class="facility-location">${props.State_Array.join(', ')}</p>
       </div>
     </button>
   </li>
