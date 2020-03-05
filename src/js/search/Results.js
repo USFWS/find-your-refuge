@@ -94,7 +94,7 @@ const Results = function (opts) {
 
   emitter.on('search:state', (query) => {
     this.empty();
-    const results = this.find(query);
+    const results = this.findByState(query);
     this.select.parentNode.setAttribute('aria-hidden', 'false');
     this.textInput.parentNode.setAttribute('aria-hidden', 'true');
     this.render(results, templates.officeList);
@@ -131,7 +131,8 @@ Results.prototype.searchState = function (query) {
 }
 
 Results.prototype.findByState = function (query) {
-  return this.data.filter(({ properties: props }) => props.State_Name ? props.State_Name.includes(query) : false);
+  return this.data.filter(({ properties: props }) => 
+    props.State_Name ? props.State_Name.toLowerCase() === query.toLowerCase() : false);
 };
 
 Results.prototype.open = function () {
