@@ -1,9 +1,15 @@
+html {
+  box-sizing: border-box;
+  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5 {
   color: $blue;
+  font-family: Merriweather, Georgia, serif;
 }
 
 li {
