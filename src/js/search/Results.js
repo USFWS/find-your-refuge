@@ -111,7 +111,7 @@ Results.prototype.activateInput = function (input) {
 Results.prototype.searchFacility = function (query) {
   const results = this.find(query);
   this.activateInput(this.textInput);
-  this.message.innerHTML = 'Search by refuge name or state';
+  this.message.innerHTML = 'Search by refuge name';
   if (!results) return;
   this.render(results.sort(sortByName), templates.officeList);
 }
