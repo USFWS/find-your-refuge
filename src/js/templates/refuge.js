@@ -14,10 +14,11 @@ const createAmenityItem = (amenity) => {
 
 const refugeTemplate = (refuges) => {
   const props = refuges[0].properties;
+  const url = props.UrlStation.includes('https') ? props.UrlStation : props.UrlStation.replace('http', 'https');
   return `
     <li>
       <h3>${props.OrgName} in ${props.State_Label}</h3>
-      <p><a href="${props.UrlStation.replace('http', 'https')}" target="_blank">Visit us on the web</a></p>
+      <p><a href="${url}" target="_blank">Visit us on the web</a></p>
       ${props.amenities.length ? `<h4>Amenities</h4>` : ''}
       <ul class="amenities-list">
         ${props.amenities.map(createAmenityItem).join('')}
