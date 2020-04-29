@@ -29,7 +29,8 @@ const Results = function (opts) {
 
   const getAndRenderAmenities = (refuge, cancelZoomToFeatures) => {
     const props = refuge.properties;
-    getAmenitiesByOrgName(props.OrgName)
+    const encodedOrgName = encodeURIComponent(props.OrgName).replace(/'/g, "''");
+    getAmenitiesByOrgName(encodedOrgName)
       .then((amenities) => {
         // Add ameninty data to refuge geojson
         const data = {
