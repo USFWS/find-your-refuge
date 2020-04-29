@@ -1,6 +1,7 @@
 const { getAmenityIcon } = require('../icons');
 
 const createAmenityItem = (amenity) => {
+  if (amenity.properties.Public_Use !== 'Public Use') return;
   const icon = getAmenityIcon(amenity.properties.Category);
   const coords = [...amenity.geometry.coordinates].reverse();
   return `
