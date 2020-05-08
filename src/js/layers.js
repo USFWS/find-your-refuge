@@ -3,6 +3,7 @@ const esri = require('esri-leaflet');
 require('esri-leaflet-renderers');
 
 const emitter = require('./emitter');
+const { titleCase } = require('./helpers');
 
 const natGeo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
@@ -19,7 +20,11 @@ const refuges = esri.featureLayer({
   minZoom: 11,
   attribution: 'U.S. Fish and Wildlife Service',
   where: `INTTYPE1 NOT IN ('E', 'A')`,
-  onEachFeature: (feature, layer) => layer.on('click', () => emitter.emit('zoom:refugefeature', feature))
+  onEachFeature: (feature, layer) => {
+    console.log(feature.properties);
+    layer.bindPopup(`<p>${titleCase(feature.properties.ORGNAME)}</p>`)
+    layer.on('click', () => emitter.emit('zoom:refugefeature', feature))
+  }
 });
 
 const amenities = esri.featureLayer({
