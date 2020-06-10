@@ -21,7 +21,6 @@ const refuges = esri.featureLayer({
   attribution: 'U.S. Fish and Wildlife Service',
   where: `INTTYPE1 NOT IN ('E', 'A')`,
   onEachFeature: (feature, layer) => {
-    console.log(feature.properties);
     layer.bindPopup(`<p>${titleCase(feature.properties.ORGNAME)}</p>`)
     layer.on('click', () => emitter.emit('zoom:refugefeature', feature))
   }
