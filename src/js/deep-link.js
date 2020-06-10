@@ -49,8 +49,14 @@ DeepLink.prototype.historyHandler = function ({ state }) {
     ...(state.method && { method: state.method })
   });
 
-  if (state.refuge && !state.amenity) getRefugeBoundsByName(state.refuge).then((bounds) => emitter.emit('set:bounds', bounds));
-  if (state.refuge && state.amenity) getAmenityBounds(state.amenity, state.refuge).then((bounds) => emitter.emit('set:bounds', bounds));
+  if (state.refuge && !state.amenity)
+    getRefugeBoundsByName(state.refuge)
+      .then((bounds) => emitter.emit('set:bounds', bounds))
+      .catch(console.log);
+  if (state.refuge && state.amenity)
+    getAmenityBounds(state.amenity, state.refuge)
+      .then((bounds) => emitter.emit('set:bounds', bounds))
+      .catch(console.log);
 };
 
 DeepLink.prototype.stateToBounds = function (state) {
@@ -67,8 +73,10 @@ DeepLink.prototype.processQueryString = function (qs) {
     emitter.emit('click:refuge', refuge);
     // getRefugeBoundsByName(parsed.refuge).then((bounds) => emitter.emit('set:bounds', bounds));
   }
-  if (parsed.amenity && parsed.refuge) getAmenityByNameAndRefuge(parsed.amenity, parsed.refuge)
-    .then((amenity) => emitter.emit('select:amenity', amenity));
+  if (parsed.amenity && parsed.refuge)
+    getAmenityByNameAndRefuge(parsed.amenity, parsed.refuge)
+      .then((amenity) => emitter.emit('select:amenity', amenity))
+      .catch(console.log);
 
   const params = {};
   if (parsed.query) params.query = parsed.query;
