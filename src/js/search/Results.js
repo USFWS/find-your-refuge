@@ -4,7 +4,7 @@ const leafletKnn = require('leaflet-knn');
 const emitter = require('../emitter');
 const { findRefugeByName, sortByName, fiveDigitNumberRegex } = require('../helpers');
 const { getZipCode } = require('../ZipcodeService');
-const { getAmenitiesByOrgName, getAmenityById } = require('../AmenitiesService');
+const { getAmenitiesByCCCode, getAmenityById } = require('../AmenitiesService');
 
 const officeList = require('../templates/office-list');
 const refuge = require('../templates/refuge');
@@ -29,8 +29,7 @@ const Results = function (opts) {
 
   const getAndRenderAmenities = (refuge, cancelZoomToFeatures) => {
     const props = refuge.properties;
-    const encodedOrgName = encodeURIComponent(props.OrgName).replace(/'/g, "''");
-    getAmenitiesByOrgName(encodedOrgName)
+    getAmenitiesByCCCode(props.CCCode)
       .then((amenities) => {
         // Add ameninty data to refuge geojson
         const data = {
@@ -44,7 +43,8 @@ const Results = function (opts) {
         };
         this.empty();
         this.render([data], templates.refuge, cancelZoomToFeatures);
-      });
+      })
+      .catch(console.log);
   }
 
   // Sets the value of the appropriate input based on an updated query parameter
@@ -158,7 +158,8 @@ Results.prototype.handleResultClick = function (e) {
 
   if (e.target.className === 'zoom-to-amenity') {
     getAmenityById(e.target.getAttribute('data-id'))
-      .then((amenity) => emitter.emit('select:amenity', amenity));
+      .then((amenity) => emitter.emit('select:amenity', amenity))
+      .catch(console.log);
   }
 };
 
