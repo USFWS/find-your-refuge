@@ -26,6 +26,12 @@ const refuges = esri.featureLayer({
   }
 });
 
+const wilderness = esri.featureLayer({
+  url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWSWilderness/FeatureServer/2',
+  minZoom: 5,
+  onEachFeature: (feature, layer) => layer.bindPopup(`<p>${titleCase(feature.properties.DESNAME)}</p>`)
+});
+
 const amenities = esri.featureLayer({
   url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0',
   minZoom: 11,
@@ -49,5 +55,6 @@ module.exports = {
   grayCanvas,
   refuges,
   basemaps,
-  amenities
+  amenities,
+  wilderness
 };
