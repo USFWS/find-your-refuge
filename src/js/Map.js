@@ -43,7 +43,10 @@ const Map = function (opts) {
   layers.refuges.addTo(this.map);
   layers.amenities.addTo(this.map);
 
-  L.control.layers(layers.basemaps, { 'Refuge boundaries': layers.refuges }).addTo(this.map);
+  L.control.layers(layers.basemaps, {
+    'Refuge boundaries': layers.refuges,
+    'Wilderness units': layers.wilderness
+  }).addTo(this.map);
   L.control.zoom({ position: 'topright' }).addTo(this.map);
 
   // Event listeners
