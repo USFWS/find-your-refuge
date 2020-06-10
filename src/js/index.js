@@ -57,9 +57,14 @@ const init = () => {
         toggleResults,
       });
       new DeepLink(window);
-    });
+    })
+    .catch(console.log);
 };
 
 init();
 document.documentElement.classList.remove('no-js');
 form.addEventListener('submit', (e) => e.preventDefault());
+
+window.addEventListener('unhandledrejection', function (event) {
+  console.error('Unhandled rejection (promise: ', event.promise, ', reason: ', event.reason, ').');
+});
