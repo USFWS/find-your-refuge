@@ -17,6 +17,13 @@ const getAmenitiesByOrgName = (orgName) => {
     .catch(console.log);
 };
 
+const getAmenitiesByCCCode = (ccCode) => {
+  const API_URL = `${AMENITIES_URL}?outFields=*&f=pgeojson&where=CCCode='${ccCode}'`;
+  return fetch(API_URL)
+    .then((res) => res.json())
+    .catch(console.log);
+};
+
 const getAmenityById = (id) => {
   const API_URL = `${AMENITIES_URL}?outFields=*&f=pgeojson&objectIds=${id}`;
   return fetch(API_URL)
@@ -35,6 +42,7 @@ const getAmenityBounds = (name, orgName) => {
 
 module.exports = {
   getAmenitiesByOrgName,
+  getAmenitiesByCCCode,
   getAmenityById,
   getAmenityBounds,
   getAmenityByNameAndRefuge
