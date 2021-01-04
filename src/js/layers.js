@@ -16,7 +16,7 @@ const grayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/serv
 });
 
 const refuges = esri.featureLayer({
-  url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWSInterest_Simplified_Authoritative/FeatureServer/1',
+  url: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/FWSInterest_Simplified_Authoritative/FeatureServer/0',
   minZoom: 11,
   attribution: 'U.S. Fish and Wildlife Service',
   where: `INTTYPE1 NOT IN ('E', 'A')`,
